@@ -266,6 +266,15 @@
 
         .check { color: var(--success-green); font-weight: bold; flex-shrink: 0; }
 
+        .deliverable-desc {
+            display: block;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 3px;
+            font-weight: 400;
+            line-height: 1.4;
+        }
+
         /* Summary Table */
         .summary-card {
             background: var(--bg-card);
@@ -730,10 +739,10 @@
                     </div>
                     <p class="phase-desc">AI work is specialized. The prompts are only as good as the legal expertise behind them — this phase requires Glenn's 30 years of construction law knowledge to get right.</p>
                     <div class="deliverables">
-                        <div class="deliverable"><span class="check">✓</span><div><strong>AI Scope Writer</strong> — rough description → legally tight scope language (Claude API)</div></div>
-                        <div class="deliverable"><span class="check">✓</span><div><strong>Contract Audit Engine</strong> — pre-send scan, flags warnings and blockers in plain English</div></div>
-                        <div class="deliverable"><span class="check">✓</span><div><strong>AI Exclusions Assistant</strong> — suggests trade-specific exclusion checklists by job type</div></div>
-                        <div class="deliverable"><span class="check">✓</span><div><strong>Tappable Glossary</strong> — every legal term in the contract is tappable, plain-English definition</div></div>
+                        <div class="deliverable"><span class="check">✓</span><div><strong>AI Scope Writer</strong><span class="deliverable-desc">Rough description → legally tight scope language via Claude API</span></div></div>
+                        <div class="deliverable"><span class="check">✓</span><div><strong>Contract Audit Engine</strong><span class="deliverable-desc">Pre-send scan, flags warnings and blockers in plain English</span></div></div>
+                        <div class="deliverable"><span class="check">✓</span><div><strong>AI Exclusions Assistant</strong><span class="deliverable-desc">Suggests trade-specific exclusion checklists by job type</span></div></div>
+                        <div class="deliverable"><span class="check">✓</span><div><strong>Tappable Glossary</strong><span class="deliverable-desc">Every legal term tappable with a plain-English definition</span></div></div>
                         <div class="deliverable"><span class="check">✓</span><div>AI testing + tuning session with Glenn (10+ real-world scenarios)</div></div>
                         <div class="deliverable"><span class="check">✓</span><div>Glenn sign-off required before Phase 2 ships</div></div>
                     </div>
@@ -761,12 +770,12 @@
                     </div>
                     <p class="phase-desc">Beyond the HIC. The full set of documents a contractor reaches for when jobs go sideways — or when they want to make sure they never do.</p>
                     <div class="deliverables">
-                        <div class="deliverable"><span class="check">✓</span><div><strong>Direct Residential Contract (DRC)</strong> — sister form to HIC, separate statutory language</div></div>
-                        <div class="deliverable"><span class="check">✓</span><div><strong>Subcontractor Agreement</strong> — scope, payment terms, insurance, liability allocation</div></div>
-                        <div class="deliverable"><span class="check">✓</span><div><strong>Change Order Form</strong> — mandatory under B&amp;P 7159, legally formatted</div></div>
-                        <div class="deliverable"><span class="check">✓</span><div><strong>20-Day Preliminary Notice</strong> — preserve mechanic's lien rights, timing-critical</div></div>
-                        <div class="deliverable"><span class="check">✓</span><div><strong>Mechanic's Lien</strong> — enforcement document when a customer doesn't pay</div></div>
-                        <div class="deliverable"><span class="check">✓</span><div><strong>Conditional &amp; Unconditional Waivers</strong> — both forms under CA Civil Code §8132–8138</div></div>
+                        <div class="deliverable"><span class="check">✓</span><div><strong>Direct Residential Contract (DRC)</strong><span class="deliverable-desc">Sister form to the HIC, separate statutory language</span></div></div>
+                        <div class="deliverable"><span class="check">✓</span><div><strong>Subcontractor Agreement</strong><span class="deliverable-desc">Scope, payment terms, insurance, liability allocation</span></div></div>
+                        <div class="deliverable"><span class="check">✓</span><div><strong>Change Order Form</strong><span class="deliverable-desc">Mandatory under B&amp;P 7159, legally formatted</span></div></div>
+                        <div class="deliverable"><span class="check">✓</span><div><strong>20-Day Preliminary Notice</strong><span class="deliverable-desc">Preserve mechanic's lien rights — timing-critical</span></div></div>
+                        <div class="deliverable"><span class="check">✓</span><div><strong>Mechanic's Lien</strong><span class="deliverable-desc">Enforcement document when a customer doesn't pay</span></div></div>
+                        <div class="deliverable"><span class="check">✓</span><div><strong>Conditional &amp; Unconditional Waivers</strong><span class="deliverable-desc">Both forms under CA Civil Code §8132–8138</span></div></div>
                     </div>
                 </div>
             </div>
