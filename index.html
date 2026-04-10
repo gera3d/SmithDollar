@@ -195,6 +195,8 @@
         .feature-emoji { font-size: 28px; margin-bottom: 8px; }
         .feature-title { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
         .feature-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.4; }
+        .feature-desc p { margin: 0; }
+        .tech-tagline { font-style: italic; margin-bottom: 10px !important; }
 
         /* Phase Cards */
         .phase-card {
@@ -436,12 +438,16 @@
 
         /* Responsive */
         @media (max-width: 900px) {
-            /* Make slides scrollable — the key fix */
+            /* Make slides scrollable, short slides stay vertically centered */
             .slide {
                 justify-content: flex-start;
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
                 padding: 28px 20px 120px;
+            }
+            .slide-content {
+                margin-top: auto;
+                margin-bottom: auto;
             }
 
             h1 { font-size: 40px; letter-spacing: -2px; }
@@ -496,6 +502,23 @@
             .nav { bottom: 32px; gap: 8px; }
             .nav-dot { width: 8px; height: 8px; }
             .slide-counter { bottom: 36px; left: 16px; font-size: 12px; }
+
+            /* Override inline margins that create dead space — requires !important */
+            .subtitle { margin-bottom: 16px !important; }
+            .meta { margin-top: 20px !important; }
+            .feature-grid { margin-top: 16px !important; }
+            .value-compare { margin-top: 16px !important; }
+            .summary-card { margin-top: 16px !important; }
+
+            /* Put bold name on its own line in deliverables — fixes the jagged wrapping */
+            .deliverable > div { flex: 1; }
+            .deliverable strong {
+                display: block;
+                margin-bottom: 2px;
+            }
+
+            /* Tighten tech card tagline spacing on mobile */
+            .tech-tagline { margin-bottom: 6px !important; }
         }
 
     </style>
@@ -707,12 +730,12 @@
                     </div>
                     <p class="phase-desc">AI work is specialized. The prompts are only as good as the legal expertise behind them — this phase requires Glenn's 30 years of construction law knowledge to get right.</p>
                     <div class="deliverables">
-                        <div class="deliverable"><span class="check">✓</span> <strong>AI Scope Writer</strong> — rough description → legally tight scope language (Claude API)</div>
-                        <div class="deliverable"><span class="check">✓</span> <strong>Contract Audit Engine</strong> — pre-send scan, flags warnings and blockers in plain English</div>
-                        <div class="deliverable"><span class="check">✓</span> <strong>AI Exclusions Assistant</strong> — suggests trade-specific exclusion checklists by job type</div>
-                        <div class="deliverable"><span class="check">✓</span> <strong>Tappable Glossary</strong> — every legal term in the contract is tappable, plain-English definition</div>
-                        <div class="deliverable"><span class="check">✓</span> AI testing + tuning session with Glenn (10+ real-world scenarios)</div>
-                        <div class="deliverable"><span class="check">✓</span> Glenn sign-off required before Phase 2 ships</div>
+                        <div class="deliverable"><span class="check">✓</span><div><strong>AI Scope Writer</strong> — rough description → legally tight scope language (Claude API)</div></div>
+                        <div class="deliverable"><span class="check">✓</span><div><strong>Contract Audit Engine</strong> — pre-send scan, flags warnings and blockers in plain English</div></div>
+                        <div class="deliverable"><span class="check">✓</span><div><strong>AI Exclusions Assistant</strong> — suggests trade-specific exclusion checklists by job type</div></div>
+                        <div class="deliverable"><span class="check">✓</span><div><strong>Tappable Glossary</strong> — every legal term in the contract is tappable, plain-English definition</div></div>
+                        <div class="deliverable"><span class="check">✓</span><div>AI testing + tuning session with Glenn (10+ real-world scenarios)</div></div>
+                        <div class="deliverable"><span class="check">✓</span><div>Glenn sign-off required before Phase 2 ships</div></div>
                     </div>
                 </div>
             </div>
@@ -738,12 +761,12 @@
                     </div>
                     <p class="phase-desc">Beyond the HIC. The full set of documents a contractor reaches for when jobs go sideways — or when they want to make sure they never do.</p>
                     <div class="deliverables">
-                        <div class="deliverable"><span class="check">✓</span> <strong>Direct Residential Contract (DRC)</strong> — sister form to HIC, separate statutory language</div>
-                        <div class="deliverable"><span class="check">✓</span> <strong>Subcontractor Agreement</strong> — scope, payment terms, insurance, liability allocation</div>
-                        <div class="deliverable"><span class="check">✓</span> <strong>Change Order Form</strong> — mandatory under B&amp;P 7159, legally formatted</div>
-                        <div class="deliverable"><span class="check">✓</span> <strong>20-Day Preliminary Notice</strong> — preserve mechanic's lien rights, timing-critical</div>
-                        <div class="deliverable"><span class="check">✓</span> <strong>Mechanic's Lien</strong> — enforcement document when a customer doesn't pay</div>
-                        <div class="deliverable"><span class="check">✓</span> <strong>Conditional &amp; Unconditional Waivers</strong> — both forms under CA Civil Code §8132–8138</div>
+                        <div class="deliverable"><span class="check">✓</span><div><strong>Direct Residential Contract (DRC)</strong> — sister form to HIC, separate statutory language</div></div>
+                        <div class="deliverable"><span class="check">✓</span><div><strong>Subcontractor Agreement</strong> — scope, payment terms, insurance, liability allocation</div></div>
+                        <div class="deliverable"><span class="check">✓</span><div><strong>Change Order Form</strong> — mandatory under B&amp;P 7159, legally formatted</div></div>
+                        <div class="deliverable"><span class="check">✓</span><div><strong>20-Day Preliminary Notice</strong> — preserve mechanic's lien rights, timing-critical</div></div>
+                        <div class="deliverable"><span class="check">✓</span><div><strong>Mechanic's Lien</strong> — enforcement document when a customer doesn't pay</div></div>
+                        <div class="deliverable"><span class="check">✓</span><div><strong>Conditional &amp; Unconditional Waivers</strong> — both forms under CA Civil Code §8132–8138</div></div>
                     </div>
                 </div>
             </div>
@@ -815,24 +838,24 @@
                     <div class="feature-emoji">📱</div>
                     <div class="feature-title" style="color: #FF6B00;">React Native (Expo)</div>
                     <div class="feature-desc" style="margin-top: 10px;">
-                        iPhone-first, cross-platform later<br><br>
-                        Fastest build path for a polished iOS app. JavaScript ecosystem. Expo handles device APIs, camera, file system, and App Store submission workflow.
+                        <p class="tech-tagline">iPhone-first, cross-platform later</p>
+                        <p>Fastest build path for a polished iOS app. JavaScript ecosystem. Expo handles device APIs, camera, file system, and App Store submission workflow.</p>
                     </div>
                 </div>
                 <div class="feature-card" style="border-color: #30D158;">
                     <div class="feature-emoji">🗄️</div>
                     <div class="feature-title" style="color: #30D158;">Node.js + Supabase</div>
                     <div class="feature-desc" style="margin-top: 10px;">
-                        Gera's primary production stack<br><br>
-                        Postgres + Auth + Storage + Realtime in one platform. Fast setup, scalable, and battle-tested. S3-compatible bucket for signed PDF storage.
+                        <p class="tech-tagline">Gera's primary production stack</p>
+                        <p>Postgres + Auth + Storage + Realtime in one platform. Fast setup, scalable, and battle-tested. S3-compatible bucket for signed PDF storage.</p>
                     </div>
                 </div>
                 <div class="feature-card" style="border-color: #AF52DE;">
                     <div class="feature-emoji">🤖</div>
                     <div class="feature-title" style="color: #AF52DE;">Claude API (Anthropic)</div>
                     <div class="feature-desc" style="margin-top: 10px;">
-                        Phase 2 AI layer<br><br>
-                        Powers Scope Writer, Contract Audit engine, and Exclusions Assistant. System prompts tuned with Glenn's 30 years of construction law expertise.
+                        <p class="tech-tagline">Phase 2 AI layer</p>
+                        <p>Powers Scope Writer, Contract Audit engine, and Exclusions Assistant. System prompts tuned with Glenn's 30 years of construction law expertise.</p>
                     </div>
                 </div>
             </div>
