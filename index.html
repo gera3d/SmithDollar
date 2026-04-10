@@ -293,6 +293,8 @@
             text-transform: uppercase;
             color: var(--text-secondary);
             padding: 16px 28px;
+            display: grid;
+            grid-template-columns: 130px 1fr 180px 120px;
         }
 
         .summary-total {
@@ -423,19 +425,79 @@
             background: linear-gradient(135deg, rgba(255,107,0,0.06), rgba(175,82,222,0.06));
         }
 
+        /* Summary row desktop grid — overridable by media query */
+        .summary-row {
+            grid-template-columns: 130px 1fr 180px 120px;
+        }
+        .summary-total-amount {
+            grid-column: span 2;
+            color: var(--accent);
+        }
+
         /* Responsive */
         @media (max-width: 900px) {
-            .slide { padding: 40px 24px 100px; }
-            h1 { font-size: 42px; letter-spacing: -2px; }
-            h2 { font-size: 32px; }
-            .subtitle { font-size: 18px; }
-            .feature-grid { grid-template-columns: 1fr; }
-            .deliverables { grid-template-columns: 1fr; }
-            .summary-row { grid-template-columns: 1fr 1fr; gap: 12px; }
-            .value-compare { grid-template-columns: 1fr; gap: 16px; }
+            /* Make slides scrollable — the key fix */
+            .slide {
+                justify-content: flex-start;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+                padding: 28px 20px 120px;
+            }
+
+            h1 { font-size: 40px; letter-spacing: -2px; }
+            h2 { font-size: 28px; letter-spacing: -1px; margin-bottom: 12px; }
+            .subtitle { font-size: 17px; }
+            .label { font-size: 11px; padding: 6px 16px; margin-bottom: 16px; }
+
+            /* Feature cards */
+            .feature-grid { grid-template-columns: 1fr; gap: 12px; margin-top: 20px; }
+            .feature-card { padding: 16px; }
+
+            /* Phase cards */
+            .phase-card { padding: 20px 16px; margin-top: 16px; }
+            .phase-header { flex-direction: column; gap: 10px; }
+            .phase-price { text-align: left; }
+            .price-amount { font-size: 26px; }
+            .phase-title { font-size: 22px; }
+            .phase-desc { font-size: 14px; margin-bottom: 16px; }
+            .deliverables { grid-template-columns: 1fr; gap: 8px; }
+            .deliverable { font-size: 13px; }
+
+            /* Quote block */
+            .quote-block { padding: 18px 20px; margin: 20px 0; }
+            .quote-text { font-size: 16px; }
+
+            /* Value compare */
+            .value-compare { grid-template-columns: 1fr; gap: 12px; }
             .value-arrow { transform: rotate(90deg); }
-            .meta { flex-direction: column; gap: 20px; }
+            .value-box { padding: 20px; }
+
+            /* Meta */
+            .meta { flex-direction: column; gap: 20px; margin-top: 32px; padding-top: 24px; }
+
+            /* Summary table — card layout on mobile */
+            .summary-header { display: none; }
+            .summary-row {
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto auto;
+                gap: 6px 12px;
+                padding: 14px 16px;
+            }
+            .summary-row > *:nth-child(1) { grid-row: 1; grid-column: 1; align-self: center; }
+            .summary-row > *:nth-child(2) { grid-row: 2; grid-column: 1 / -1; font-size: 12px; color: var(--text-secondary); line-height: 1.4; }
+            .summary-row > *:nth-child(3) { grid-row: 1; grid-column: 2; text-align: right; font-weight: 700; font-size: 15px; align-self: center; }
+            .summary-row > *:nth-child(4) { display: none; }
+            .summary-total { font-size: 14px; }
+            .summary-total-amount { grid-column: 2; grid-row: 1; text-align: right; font-size: 18px; font-weight: 800; }
+
+            /* Nav arrows — smaller and higher contrast */
+            .nav-arrows { bottom: 24px; right: 16px; gap: 8px; }
+            .nav-arrow { width: 40px; height: 40px; font-size: 16px; }
+            .nav { bottom: 32px; gap: 8px; }
+            .nav-dot { width: 8px; height: 8px; }
+            .slide-counter { bottom: 36px; left: 16px; font-size: 12px; }
         }
+
     </style>
 </head>
 <body>
@@ -694,46 +756,46 @@
             <h2>Investment Summary</h2>
             <p class="subtitle" style="margin-bottom: 10px;">Everything on the table. Glenn controls every phase.</p>
             <div class="summary-card">
-                <div class="summary-header" style="display: grid; grid-template-columns: 130px 1fr 180px 120px;">
+                <div class="summary-header">
                     <div>Phase</div>
                     <div>Deliverable</div>
                     <div>Investment</div>
                     <div>Timeline</div>
                 </div>
-                <div class="summary-row" style="grid-template-columns: 130px 1fr 180px 120px;">
+                <div class="summary-row">
                     <div><span class="status-badge badge-kickoff">Bucket 1</span></div>
                     <div>Name, branding, landing page, legal content kickoff, business structure</div>
                     <div>$5,000 flat</div>
                     <div>~2 weeks</div>
                 </div>
-                <div class="summary-row" style="grid-template-columns: 130px 1fr 180px 120px;">
+                <div class="summary-row">
                     <div><span class="status-badge badge-mvp">Phase 1</span></div>
                     <div>MVP iPhone app — HIC form, compliance engine, e-sign, PDF, Stripe, App Store</div>
                     <div>$45,000</div>
                     <div>~12 weeks</div>
                 </div>
-                <div class="summary-row" style="grid-template-columns: 130px 1fr 180px 120px;">
+                <div class="summary-row">
                     <div><span class="status-badge badge-monthly">Monthly</span></div>
                     <div>Hosting, infrastructure, API costs (Supabase + Vercel + Railway)</div>
                     <div>~$50–100/mo</div>
                     <div>Ongoing</div>
                 </div>
-                <div class="summary-row" style="grid-template-columns: 130px 1fr 180px 120px;">
+                <div class="summary-row">
                     <div><span class="status-badge badge-ai">Phase 2</span></div>
                     <div>AI layer — Scope Writer, Contract Audit, Exclusions Assistant, Glossary</div>
                     <div>$10,000</div>
                     <div>After users</div>
                 </div>
-                <div class="summary-row" style="grid-template-columns: 130px 1fr 180px 120px;">
+                <div class="summary-row">
                     <div><span class="status-badge badge-docs">Phase 3</span></div>
                     <div>Full doc suite — DRC, subcontractor, change order, lien, waivers</div>
                     <div>$8,000</div>
                     <div>Per form</div>
                 </div>
-                <div class="summary-row summary-total" style="grid-template-columns: 130px 1fr 180px 120px;">
+                <div class="summary-row summary-total">
                     <div></div>
                     <div>Total if all phases complete</div>
-                    <div style="grid-column: span 2; color: var(--accent);">$68,000 all-in</div>
+                    <div class="summary-total-amount">$68,000 all-in</div>
                 </div>
             </div>
             <p style="margin-top: 20px; font-size: 13px; color: var(--text-secondary); text-align: left;">
@@ -835,10 +897,12 @@
     function goToSlide(n) {
         slides[currentSlide].classList.remove('active');
         slides[currentSlide].classList.add('prev');
+        slides[currentSlide].scrollTop = 0;
         navDots.children[currentSlide].classList.remove('active');
         currentSlide = n;
         slides[currentSlide].classList.add('active');
         slides[currentSlide].classList.remove('prev');
+        slides[currentSlide].scrollTop = 0;
         navDots.children[currentSlide].classList.add('active');
         slideCounter.textContent = currentSlide + 1;
         updateButtons();
