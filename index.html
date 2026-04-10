@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BuildRight — CA Contractor Contract Platform · Proposal</title>
+    <style>
+        :root {
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-card: #141414;
+            --text-primary: #f5f5f7;
+            --text-secondary: #86868b;
+            --accent: #FF6B00;
+            --accent-dim: rgba(255, 107, 0, 0.15);
+            --accent-gradient: linear-gradient(135deg, #FF6B00 0%, #FF3D00 50%, #CC2900 100%);
+            --border-color: #1d1d1f;
+            --success-green: #30D158;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body { height: 100%; overflow: hidden; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .slideshow {
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(100px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0);
+        }
+
+        .slide.prev { transform: translateX(-100px); }
+
+        .slide-content {
+            max-width: 1000px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .nav-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: var(--border-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: var(--accent);
+            transform: scale(1.2);
+        }
+
+        .nav-dot:hover { background: var(--text-secondary); }
+
+        .nav-arrows {
+            position: fixed;
+            bottom: 40px; right: 40px;
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .nav-arrow {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .nav-arrow:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .nav-arrow:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        .slide-counter {
+            position: fixed;
+            bottom: 48px; left: 40px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            z-index: 100;
+        }
+
+        /* Typography */
+        .label {
+            display: inline-block;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 100px;
+            padding: 8px 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            font-size: 72px;
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -3px;
+            margin-bottom: 24px;
+        }
+
+        h2 {
+            font-size: 56px;
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -2px;
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            font-size: 24px;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        .gradient-text {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .highlight { color: var(--accent); }
+
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 40px;
+            text-align: left;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .feature-emoji { font-size: 28px; margin-bottom: 8px; }
+        .feature-title { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+        .feature-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.4; }
+
+        /* Phase Cards */
+        .phase-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+            margin-top: 30px;
+        }
+
+        .phase-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+        }
+
+        .phase-kickoff::before  { background: linear-gradient(90deg, #FF6B00, #FF3D00); }
+        .phase-mvp::before      { background: linear-gradient(90deg, #FF6B00, #AF52DE); }
+        .phase-ai::before       { background: linear-gradient(90deg, #AF52DE, #007AFF); }
+        .phase-docs::before     { background: linear-gradient(90deg, #007AFF, #30D158); }
+
+        .phase-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .phase-number {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .phase-title { font-size: 28px; font-weight: 700; }
+
+        .phase-price { text-align: right; }
+        .price-amount { font-size: 32px; font-weight: 700; color: var(--accent); }
+        .price-timeline { font-size: 14px; color: var(--text-secondary); }
+
+        .phase-desc {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            max-width: 700px;
+        }
+
+        .deliverables {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .deliverable {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .check { color: var(--success-green); font-weight: bold; flex-shrink: 0; }
+
+        /* Summary Table */
+        .summary-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            overflow: hidden;
+            text-align: left;
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        .summary-row {
+            display: grid;
+            grid-template-columns: 120px 1fr 200px 120px;
+            padding: 18px 28px;
+            border-bottom: 1px solid var(--border-color);
+            align-items: center;
+        }
+
+        .summary-row:last-child { border-bottom: none; }
+
+        .summary-header {
+            background: var(--bg-secondary);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            padding: 16px 28px;
+        }
+
+        .summary-total {
+            background: linear-gradient(135deg, rgba(255,107,0,0.08), rgba(175,82,222,0.08));
+            font-weight: 700;
+            font-size: 17px;
+        }
+
+        /* Status badges */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .badge-kickoff  { background: rgba(255,107,0,0.15); color: #FF6B00; }
+        .badge-mvp      { background: rgba(255,107,0,0.15); color: #FF6B00; }
+        .badge-ai       { background: rgba(175,82,222,0.15); color: #AF52DE; }
+        .badge-docs     { background: rgba(0,122,255,0.15);  color: #007AFF; }
+        .badge-monthly  { background: rgba(48,209,88,0.15);  color: #30D158; }
+
+        /* Quote Block */
+        .quote-block {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--accent);
+            padding: 28px 36px;
+            border-radius: 0 16px 16px 0;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .quote-text {
+            font-size: 20px;
+            font-style: italic;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .quote-author { font-size: 14px; color: var(--text-secondary); }
+
+        /* Value Compare */
+        .value-compare {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 24px;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .value-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 28px;
+            text-align: center;
+        }
+
+        .value-label {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .value-amount { font-size: 42px; font-weight: 800; line-height: 1; }
+        .value-desc { font-size: 14px; color: var(--text-secondary); margin-top: 8px; }
+        .value-arrow { font-size: 36px; color: var(--accent); }
+
+        /* Meta */
+        .meta {
+            margin-top: 48px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+        }
+
+        .meta-item { text-align: center; }
+
+        .meta-label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .meta-value { font-size: 15px; font-weight: 500; }
+
+        /* Cost Table */
+        .cost-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .cost-table th {
+            background: var(--bg-secondary);
+            padding: 14px 20px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            text-align: left;
+        }
+
+        .cost-table td {
+            padding: 16px 20px;
+            font-size: 14px;
+            border-top: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        .cost-table tr:last-child td {
+            font-weight: 700;
+            background: linear-gradient(135deg, rgba(255,107,0,0.06), rgba(175,82,222,0.06));
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .slide { padding: 40px 24px 100px; }
+            h1 { font-size: 42px; letter-spacing: -2px; }
+            h2 { font-size: 32px; }
+            .subtitle { font-size: 18px; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .deliverables { grid-template-columns: 1fr; }
+            .summary-row { grid-template-columns: 1fr 1fr; gap: 12px; }
+            .value-compare { grid-template-columns: 1fr; gap: 16px; }
+            .value-arrow { transform: rotate(90deg); }
+            .meta { flex-direction: column; gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+<div class="slideshow">
+
+    <!-- Slide 1: Title -->
+    <div class="slide active">
+        <div class="slide-content">
+            <span class="label">CA Contractor Contract Platform — Client Proposal</span>
+            <h1>You're Doing<br><span class="gradient-text">Contracts Wrong.</span></h1>
+            <p class="subtitle">California Contractors deserve a contract that actually protects them — built for the job site, not the law library.</p>
+            <div class="meta" style="margin-top: 80px; border: none;">
+                <div class="meta-item">
+                    <div class="meta-label">Prepared For</div>
+                    <div class="meta-value">Glenn M. Smith — Smith Dollar PC</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Prepared By</div>
+                    <div class="meta-value">Gera Yeremin</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Date</div>
+                    <div class="meta-value">April 2026</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 2: The Problem -->
+    <div class="slide">
+        <div class="slide-content">
+            <h2>The Problem</h2>
+            <p class="subtitle" style="margin-bottom: 50px;">California contractors are exposed. Every single day.</p>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-emoji">📄</div>
+                    <div class="feature-title">Unlicensed Templates</div>
+                    <div class="feature-desc">Most contractors are still using handwritten contracts or random PDFs that don't comply with Business &amp; Professions Code §7159. They don't know what they're missing.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-emoji">⚖️</div>
+                    <div class="feature-title">Compliance is a Minefield</div>
+                    <div class="feature-desc">B&amp;P 7159 mandates specific font sizes, statutory language, cancellation periods, and payment caps. One wrong clause voids the contract entirely.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-emoji">💸</div>
+                    <div class="feature-title">Disputes Kill Businesses</div>
+                    <div class="feature-desc">A non-compliant HIC contract can't be enforced in court. Contractors lose mechanic's lien rights and are exposed to license suspension by the CSLB.</div>
+                </div>
+            </div>
+            <div class="quote-block">
+                <div class="quote-text">"The contractor who wins disputes has the better contract. Most contractors don't even know what's required."</div>
+                <div class="quote-author">— The gap BuildRight closes.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: The Solution -->
+    <div class="slide">
+        <div class="slide-content">
+            <span class="label">The Solution</span>
+            <h2>Fill in the Job.<br><span class="gradient-text">Get a Bulletproof<br>Contract.</span> Send It.</h2>
+            <p class="subtitle">An iPhone-first guided form that produces a fully B&amp;P 7159 compliant HIC contract in minutes — with e-signature built in.</p>
+            <div class="feature-grid" style="margin-top: 50px;">
+                <div class="feature-card">
+                    <div class="feature-emoji">📱</div>
+                    <div class="feature-title">iPhone-First Design</div>
+                    <div class="feature-desc">Built for the job site. Contractors fill out a step-by-step guided form — no legal knowledge required. Auto-fills from their profile every time.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-emoji">🛡️</div>
+                    <div class="feature-title">B&amp;P 7159 Compliance Engine</div>
+                    <div class="feature-desc">Every required field, statutory language, font size, and payment cap enforced automatically. Down payment capped at $1K or 10% — live.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-emoji">✍️</div>
+                    <div class="feature-title">E-Signature Built In</div>
+                    <div class="feature-desc">Customer receives a signing link via email. Signs on any device. Timestamp + IP logged. Both parties receive the signed PDF automatically.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: How It Works -->
+    <div class="slide">
+        <div class="slide-content">
+            <h2>How It Works</h2>
+            <p class="subtitle" style="margin-bottom: 50px;">Three steps from job site to signed, compliant contract.</p>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-emoji">👤</div>
+                    <div class="feature-title">Step 1 — Profile Setup</div>
+                    <div class="feature-desc">Contractor enters business info once: license #, insurance carrier, logo, trade type. Every future contract auto-fills from their profile. CSLB # validated on entry.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-emoji">📋</div>
+                    <div class="feature-title">Step 2 — Fill the Form</div>
+                    <div class="feature-desc">Step-by-step guided HIC form. Scope, materials, exclusions, dates, payment schedule. Compliance rules enforced in real time. AI Scope Writer available in Phase 2.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-emoji">📤</div>
+                    <div class="feature-title">Step 3 — Send &amp; Sign</div>
+                    <div class="feature-desc">Tap Send. Customer gets a branded email with signing link. Signs on their phone. Both parties receive the signed PDF. Contract saved automatically.</div>
+                </div>
+            </div>
+            <div class="value-compare" style="margin-top: 40px;">
+                <div class="value-box">
+                    <div class="value-label">Input</div>
+                    <div style="font-size: 22px; font-weight: 700; margin: 8px 0;">Job Details</div>
+                    <div class="value-desc">Scope, payment, customer info — filled on-site in minutes</div>
+                </div>
+                <div class="value-arrow">→</div>
+                <div class="value-box">
+                    <div class="value-label">Output</div>
+                    <div style="font-size: 22px; font-weight: 700; margin: 8px 0;">Signed PDF</div>
+                    <div class="value-desc">Fully B&amp;P 7159 compliant, timestamped, legally enforceable</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: Bucket 1 — Kickoff -->
+    <div class="slide">
+        <div class="slide-content">
+            <div style="text-align: left; width: 100%;">
+                <h2 style="text-align: center; margin-bottom: 10px;">Bucket 1 — Pre-Development Kickoff</h2>
+                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 20px;">Everything before a line of app code is written. One check. Clear deliverables.</p>
+                <div class="phase-card phase-kickoff">
+                    <div class="phase-header">
+                        <div>
+                            <div class="phase-number">Bucket 1</div>
+                            <div class="phase-title">Kickoff Retainer</div>
+                        </div>
+                        <div class="phase-price">
+                            <div class="price-amount">$5,000</div>
+                            <div class="price-timeline">Flat retainer · One check</div>
+                        </div>
+                    </div>
+                    <p class="phase-desc">Tangible assets Glenn can see and use immediately — before any app development begins. Name, brand, landing page, and legal content scaffolding.</p>
+                    <div class="deliverables">
+                        <div class="deliverable"><span class="check">✓</span> Product name decision + domain purchase</div>
+                        <div class="deliverable"><span class="check">✓</span> Logo mark + wordmark (SVG + PNG)</div>
+                        <div class="deliverable"><span class="check">✓</span> Color palette, typography &amp; brand guidelines PDF</div>
+                        <div class="deliverable"><span class="check">✓</span> Landing page deployed with working waitlist</div>
+                        <div class="deliverable"><span class="check">✓</span> Email capture + confirmation sequence</div>
+                        <div class="deliverable"><span class="check">✓</span> GA4 analytics installed</div>
+                        <div class="deliverable"><span class="check">✓</span> B&amp;P 7159 field mapping session with Glenn</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6: Phase 1 — MVP App -->
+    <div class="slide">
+        <div class="slide-content">
+            <div style="text-align: left; width: 100%;">
+                <h2 style="text-align: center; margin-bottom: 10px;">Phase 1 — MVP iPhone App</h2>
+                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 20px;">Full production build. Separate contract. Glenn approves before it starts.</p>
+                <div class="phase-card phase-mvp">
+                    <div class="phase-header">
+                        <div>
+                            <div class="phase-number">Phase 1</div>
+                            <div class="phase-title">MVP Build</div>
+                        </div>
+                        <div class="phase-price">
+                            <div class="price-amount">$45,000</div>
+                            <div class="price-timeline">React Native · Node.js + Supabase · Stripe</div>
+                        </div>
+                    </div>
+                    <p class="phase-desc">Everything a California contractor needs to write, send, and store a compliant HIC contract from their iPhone.</p>
+                    <div class="deliverables">
+                        <div class="deliverable"><span class="check">✓</span> Figma screen design (all ~14 screens)</div>
+                        <div class="deliverable"><span class="check">✓</span> Contractor onboarding + CSLB validation</div>
+                        <div class="deliverable"><span class="check">✓</span> HIC guided form — step-by-step, mobile</div>
+                        <div class="deliverable"><span class="check">✓</span> B&amp;P 7159 compliance engine, real-time</div>
+                        <div class="deliverable"><span class="check">✓</span> Down payment cap enforcer ($1K or 10%)</div>
+                        <div class="deliverable"><span class="check">✓</span> Progress payment scheduler</div>
+                        <div class="deliverable"><span class="check">✓</span> E-signature flow (email link → sign → PDF)</div>
+                        <div class="deliverable"><span class="check">✓</span> PDF generation engine (Puppeteer/PDFKit)</div>
+                        <div class="deliverable"><span class="check">✓</span> Document storage + search dashboard</div>
+                        <div class="deliverable"><span class="check">✓</span> Stripe billing (Starter $19.99 / Pro $29.99)</div>
+                        <div class="deliverable"><span class="check">✓</span> 3-contract free trial, no credit card required</div>
+                        <div class="deliverable"><span class="check">✓</span> App Store submission + TestFlight beta</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 7: Phase 2 — AI Features -->
+    <div class="slide">
+        <div class="slide-content">
+            <div style="text-align: left; width: 100%;">
+                <h2 style="text-align: center; margin-bottom: 10px;">Phase 2 — AI Features</h2>
+                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 20px;">Triggered after Phase 1 has paying users. Built in deep collaboration with Glenn.</p>
+                <div class="phase-card phase-ai">
+                    <div class="phase-header">
+                        <div>
+                            <div class="phase-number">Phase 2</div>
+                            <div class="phase-title">AI Layer — Claude API</div>
+                        </div>
+                        <div class="phase-price">
+                            <div class="price-amount">$10,000</div>
+                            <div class="price-timeline">Separate contract · After Phase 1 live</div>
+                        </div>
+                    </div>
+                    <p class="phase-desc">AI work is specialized. The prompts are only as good as the legal expertise behind them — this phase requires Glenn's 30 years of construction law knowledge to get right.</p>
+                    <div class="deliverables">
+                        <div class="deliverable"><span class="check">✓</span> <strong>AI Scope Writer</strong> — rough description → legally tight scope language (Claude API)</div>
+                        <div class="deliverable"><span class="check">✓</span> <strong>Contract Audit Engine</strong> — pre-send scan, flags warnings and blockers in plain English</div>
+                        <div class="deliverable"><span class="check">✓</span> <strong>AI Exclusions Assistant</strong> — suggests trade-specific exclusion checklists by job type</div>
+                        <div class="deliverable"><span class="check">✓</span> <strong>Tappable Glossary</strong> — every legal term in the contract is tappable, plain-English definition</div>
+                        <div class="deliverable"><span class="check">✓</span> AI testing + tuning session with Glenn (10+ real-world scenarios)</div>
+                        <div class="deliverable"><span class="check">✓</span> Glenn sign-off required before Phase 2 ships</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 8: Phase 3 — Full Doc Suite -->
+    <div class="slide">
+        <div class="slide-content">
+            <div style="text-align: left; width: 100%;">
+                <h2 style="text-align: center; margin-bottom: 10px;">Phase 3 — Full Document Suite</h2>
+                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 20px;">Every contract form a California contractor needs. Each reviewed and signed off by Glenn.</p>
+                <div class="phase-card phase-docs">
+                    <div class="phase-header">
+                        <div>
+                            <div class="phase-number">Phase 3</div>
+                            <div class="phase-title">Complete Legal Toolkit</div>
+                        </div>
+                        <div class="phase-price">
+                            <div class="price-amount">$8,000</div>
+                            <div class="price-timeline">Separate contract · Per form with Glenn review</div>
+                        </div>
+                    </div>
+                    <p class="phase-desc">Beyond the HIC. The full set of documents a contractor reaches for when jobs go sideways — or when they want to make sure they never do.</p>
+                    <div class="deliverables">
+                        <div class="deliverable"><span class="check">✓</span> <strong>Direct Residential Contract (DRC)</strong> — sister form to HIC, separate statutory language</div>
+                        <div class="deliverable"><span class="check">✓</span> <strong>Subcontractor Agreement</strong> — scope, payment terms, insurance, liability allocation</div>
+                        <div class="deliverable"><span class="check">✓</span> <strong>Change Order Form</strong> — mandatory under B&amp;P 7159, legally formatted</div>
+                        <div class="deliverable"><span class="check">✓</span> <strong>20-Day Preliminary Notice</strong> — preserve mechanic's lien rights, timing-critical</div>
+                        <div class="deliverable"><span class="check">✓</span> <strong>Mechanic's Lien</strong> — enforcement document when a customer doesn't pay</div>
+                        <div class="deliverable"><span class="check">✓</span> <strong>Conditional &amp; Unconditional Waivers</strong> — both forms under CA Civil Code §8132–8138</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 9: Investment Summary -->
+    <div class="slide">
+        <div class="slide-content">
+            <h2>Investment Summary</h2>
+            <p class="subtitle" style="margin-bottom: 10px;">Everything on the table. Glenn controls every phase.</p>
+            <div class="summary-card">
+                <div class="summary-header" style="display: grid; grid-template-columns: 130px 1fr 180px 120px;">
+                    <div>Phase</div>
+                    <div>Deliverable</div>
+                    <div>Investment</div>
+                    <div>Timeline</div>
+                </div>
+                <div class="summary-row" style="grid-template-columns: 130px 1fr 180px 120px;">
+                    <div><span class="status-badge badge-kickoff">Bucket 1</span></div>
+                    <div>Name, branding, landing page, legal content kickoff, business structure</div>
+                    <div>$5,000 flat</div>
+                    <div>~2 weeks</div>
+                </div>
+                <div class="summary-row" style="grid-template-columns: 130px 1fr 180px 120px;">
+                    <div><span class="status-badge badge-mvp">Phase 1</span></div>
+                    <div>MVP iPhone app — HIC form, compliance engine, e-sign, PDF, Stripe, App Store</div>
+                    <div>$45,000</div>
+                    <div>~12 weeks</div>
+                </div>
+                <div class="summary-row" style="grid-template-columns: 130px 1fr 180px 120px;">
+                    <div><span class="status-badge badge-monthly">Monthly</span></div>
+                    <div>Hosting, infrastructure, API costs (Supabase + Vercel + Railway)</div>
+                    <div>~$50–100/mo</div>
+                    <div>Ongoing</div>
+                </div>
+                <div class="summary-row" style="grid-template-columns: 130px 1fr 180px 120px;">
+                    <div><span class="status-badge badge-ai">Phase 2</span></div>
+                    <div>AI layer — Scope Writer, Contract Audit, Exclusions Assistant, Glossary</div>
+                    <div>$10,000</div>
+                    <div>After users</div>
+                </div>
+                <div class="summary-row" style="grid-template-columns: 130px 1fr 180px 120px;">
+                    <div><span class="status-badge badge-docs">Phase 3</span></div>
+                    <div>Full doc suite — DRC, subcontractor, change order, lien, waivers</div>
+                    <div>$8,000</div>
+                    <div>Per form</div>
+                </div>
+                <div class="summary-row summary-total" style="grid-template-columns: 130px 1fr 180px 120px;">
+                    <div></div>
+                    <div>Total if all phases complete</div>
+                    <div style="grid-column: span 2; color: var(--accent);">$68,000 all-in</div>
+                </div>
+            </div>
+            <p style="margin-top: 20px; font-size: 13px; color: var(--text-secondary); text-align: left;">
+                Each app phase is a separate contract. Glenn approves each one before it starts.
+            </p>
+        </div>
+    </div>
+
+
+    <!-- Slide 10: Tech Stack -->
+    <div class="slide">
+        <div class="slide-content">
+            <h2>The Tech Stack</h2>
+            <p class="subtitle" style="margin-bottom: 50px;">Chosen for speed, reliability, and a proven production track record.</p>
+            <div class="feature-grid">
+                <div class="feature-card" style="border-color: #FF6B00;">
+                    <div class="feature-emoji">📱</div>
+                    <div class="feature-title" style="color: #FF6B00;">React Native (Expo)</div>
+                    <div class="feature-desc" style="margin-top: 10px;">
+                        iPhone-first, cross-platform later<br><br>
+                        Fastest build path for a polished iOS app. JavaScript ecosystem. Expo handles device APIs, camera, file system, and App Store submission workflow.
+                    </div>
+                </div>
+                <div class="feature-card" style="border-color: #30D158;">
+                    <div class="feature-emoji">🗄️</div>
+                    <div class="feature-title" style="color: #30D158;">Node.js + Supabase</div>
+                    <div class="feature-desc" style="margin-top: 10px;">
+                        Gera's primary production stack<br><br>
+                        Postgres + Auth + Storage + Realtime in one platform. Fast setup, scalable, and battle-tested. S3-compatible bucket for signed PDF storage.
+                    </div>
+                </div>
+                <div class="feature-card" style="border-color: #AF52DE;">
+                    <div class="feature-emoji">🤖</div>
+                    <div class="feature-title" style="color: #AF52DE;">Claude API (Anthropic)</div>
+                    <div class="feature-desc" style="margin-top: 10px;">
+                        Phase 2 AI layer<br><br>
+                        Powers Scope Writer, Contract Audit engine, and Exclusions Assistant. System prompts tuned with Glenn's 30 years of construction law expertise.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Slide 12: Let's Build -->
+    <div class="slide">
+        <div class="slide-content">
+            <span class="label">Ready to Move</span>
+            <h1 style="margin-bottom: 40px;"><span class="gradient-text">Let's Build.</span></h1>
+            <p class="subtitle" style="margin-bottom: 40px;">Bucket 1 Kickoff · $5,000 · Deliverables in 2 weeks</p>
+            <div class="meta" style="border: none; margin-top: 0;">
+                <div class="meta-item">
+                    <div class="meta-label">Developer</div>
+                    <div class="meta-value">Gera Yeremin</div>
+                    <div style="font-size: 13px; color: var(--accent); margin-top: 4px;">gera3d@gmail.com</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Client</div>
+                    <div class="meta-value">Glenn M. Smith</div>
+                    <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">Smith Dollar PC · Santa Rosa, CA</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Total Investment</div>
+                    <div class="meta-value" style="font-size: 22px; font-weight: 800; color: var(--accent);">$68,000</div>
+                    <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">All phases · Glenn approves each</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Navigation -->
+<div class="slide-counter"><span id="current-slide">1</span> / <span id="total-slides"></span></div>
+<div class="nav" id="nav-dots"></div>
+<div class="nav-arrows">
+    <button class="nav-arrow" id="prev-btn">←</button>
+    <button class="nav-arrow" id="next-btn">→</button>
+</div>
+
+<script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const navDots = document.getElementById('nav-dots');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const slideCounter = document.getElementById('current-slide');
+    const totalSlidesSpan = document.getElementById('total-slides');
+
+    for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement('div');
+        dot.classList.add('nav-dot');
+        if (i === 0) dot.classList.add('active');
+        dot.addEventListener('click', () => goToSlide(i));
+        navDots.appendChild(dot);
+    }
+
+    function goToSlide(n) {
+        slides[currentSlide].classList.remove('active');
+        slides[currentSlide].classList.add('prev');
+        navDots.children[currentSlide].classList.remove('active');
+        currentSlide = n;
+        slides[currentSlide].classList.add('active');
+        slides[currentSlide].classList.remove('prev');
+        navDots.children[currentSlide].classList.add('active');
+        slideCounter.textContent = currentSlide + 1;
+        updateButtons();
+    }
+
+    function nextSlide() { if (currentSlide < totalSlides - 1) goToSlide(currentSlide + 1); }
+    function prevSlide() { if (currentSlide > 0) goToSlide(currentSlide - 1); }
+
+    function updateButtons() {
+        prevBtn.disabled = currentSlide === 0;
+        nextBtn.disabled = currentSlide === totalSlides - 1;
+    }
+
+    prevBtn.addEventListener('click', prevSlide);
+    nextBtn.addEventListener('click', nextSlide);
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') prevSlide();
+        if (e.key === 'ArrowRight') nextSlide();
+    });
+
+    // Touch/swipe support
+    let touchStartX = 0;
+    document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+    document.addEventListener('touchend', (e) => {
+        const diff = touchStartX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 50) { diff > 0 ? nextSlide() : prevSlide(); }
+    });
+
+    totalSlidesSpan.textContent = totalSlides;
+    updateButtons();
+</script>
+</body>
+</html>
